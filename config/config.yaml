@@ -1,0 +1,48 @@
+# directories
+result_dir:  ../results/
+working_dir: ../inputs/
+
+# refs 
+refs:
+  metadata: ../inputs/metadata/<experiment_ID>_metadata.csv
+  experiment: <experiment_ID>
+
+# settings for Dada2
+Dada2_global:
+  pattern_FWD_read: "_1.fq.gz"
+  pattern_REV_read: "_2.fq.gz"
+  multithread: TRUE
+
+Dada2_removeNs:
+  maxN: 0
+
+Dada2_remove_primers:
+  forward_primer_seq: "ACTCCTACGGGAGGCAGCA"
+  reverse_primer_seq: "GGACTACHVGGGTWTCTAAT"
+  minimum_length: 50
+  nextseq_trim: 20
+
+Dada2_filter_and_trim:
+  trunc_length_FWD: 0
+  trunc_length_REV: 220
+  maxEE_FWD: 2
+  maxEE_REV: 2
+  truncQ: 2
+
+Dada2_learn_error_rates:
+  nbases: 1e8
+
+Dada2_sequence_table:
+  pooling: TRUE # Posibilities: TRUE, FALSE, pseudo
+
+Download_silva_training_set:
+  training_set: ../inputs/database/silva_nr99_v138.1_train_set.fa.gz
+  training_set_link: https://zenodo.org/records/4587955/files/silva_nr99_v138.1_train_set.fa.gz?download=1
+
+Dada2_chimeras_taxonomy:
+  lower_cutoff: 400
+  upper_cutoff: 435
+  minFoldParentOverAbundance: 2
+
+Dada2_to_phyloseq:
+  sample_names: "Sample_ID"

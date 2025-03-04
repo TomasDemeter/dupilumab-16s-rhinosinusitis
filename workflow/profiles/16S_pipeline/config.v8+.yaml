@@ -1,0 +1,71 @@
+executor: slurm
+
+default-resources:
+  mem_mb: 10240
+  runtime: 60
+  cpus_per_task: 1
+  slurm_partition: "standard"
+  slurm_account: "<your_account>"
+  output: "logs/{rule}/{jobid}.out"
+  error: "logs/{rule}/{jobid}.err"
+  slurm_extra: "'--qos=long --mail-type=END,FAIL --mail-user=<your_email>'"
+
+jobs: 50
+printshellcmds: True
+rerun-incomplete: True
+keep-going: True
+keep-incomplete: False
+restart-times: 3
+use-conda: True
+conda-frontend: mamba
+
+set-resources:
+  FastQC_raw:
+    cpus_per_task: 64
+    mem_mb: max((10000 * attempt), (input.size_mb * 50 * attempt))
+    runtime: max((2 * attempt), (input.size_mb // 30 * attempt ))
+  
+  FastQC_filtered:
+    cpus_per_task: 64
+    mem_mb: max((10000 * attempt), (input.size_mb * 50 * attempt))
+    runtime: max((2 * attempt), (input.size_mb // 30 * attempt ))
+  
+  multiqc_filtered:
+    cpus_per_task: 1
+    mem_mb: max((10000 * attempt), (input.size_mb * 2 * attempt))
+    runtime: max((3 * attempt), (input.size_mb // 100 * attempt))
+  
+  multiqc_raw:
+    cpus_per_task: 1
+    mem_mb: max((10000 * attempt), (input.size_mb * 2 * attempt))
+    runtime: max((3 * attempt), (input.size_mb // 100 * attempt))
+  
+  Dada2_removeNs:
+    cpus_per_task: 64
+    mem_mb: max((200000 * attempt), (input.size_mb * 10 *  attempt))
+    runtime: max((20 * attempt), (input.size_mb // 1024 * 5 *  attempt))
+
+  Dada2_remove_primers:
+    cpus_per_task: 64
+    mem_mb: max((7000 * attempt), (input.size_mb // 1024 * 40 *  attempt))
+    runtime: max((3 * attempt), (input.size_mb // 100 * 3 *  attempt))
+
+  Dada2_filter_and_trim:
+    cpus_per_task: 64
+    mem_mb: max((200000 * attempt), (input.size_mb * 50 *  attempt))
+    runtime: max((20 * attempt), (input.size_mb // 1024 * 2 *  attempt))
+
+  Dada2_learn_error_rates:
+    cpus_per_task: 64
+    mem_mb: max((20000 * attempt), (input.size_mb * 60 * attempt))
+    runtime: max((180 * attempt), (input.size_mb // 1024 * 60 *  attempt))
+
+  Dada2_sequence_table:
+    cpus_per_task: 64
+    mem_mb: max((600000 * attempt), (input.size_mb * 60 *  attempt))
+    runtime: max((1080 * attempt), (input.size_mb // 1024 * 300 *  attempt))
+  
+  Dada2_chimeras_taxonomy:
+    cpus_per_task: 64
+    mem_mb: max((40000 * attempt), (input.size_mb * 20 *  attempt))
+    runtime: max((180 * attempt), (input.size_mb * 10 *  attempt))
